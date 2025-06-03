@@ -6,4 +6,5 @@ dist/
 *.log
 npm-debug.log*
 
-AATIIvirtualenv/
+AATIvirtualenv/
+.gitignore
