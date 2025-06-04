@@ -1,0 +1,12 @@
+node_modules/
+.env.*
+build/
+dist/
+.env
+*.log
+npm-debug.log*
+
+AATIvirtualenv/
+.gitignore
+
+media/
