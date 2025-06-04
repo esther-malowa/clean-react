@@ -4,10 +4,10 @@ from .models import UserProfile, User
 # Register your models here.
 @admin.register(User)
 class UserModelAdmin(admin.ModelAdmin):
-    list_display = ['id', 'username', 'first_name', 'last_name', 'email', 'password', 'is_active']
+    list_display = ['username', 'first_name', 'last_name', 'email', 'password', 'is_active']
     search_fields = ['first_name', 'last_name', 'email',]
 
 @admin.register(UserProfile)
 class UserProfileModelAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'bio', 'profile_picture']
+    list_display = ['user', 'bio', 'profile_picture']
     search_fields = ['user', 'bio']
