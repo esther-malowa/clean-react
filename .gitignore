@@ -10,3 +10,5 @@ AATIvirtualenv/
 .gitignore
 
 media/
+*.pyc
+__pycache__/
