@@ -6,7 +6,6 @@ from rest_framework import serializers
 
 from django.conf import settings
 from django.core.mail import EmailMessage
-from django.core.validators import EmailValidator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.sites.shortcuts import get_current_site

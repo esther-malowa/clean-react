@@ -90,6 +90,7 @@ export default function Register() {
 import React, { useState } from 'react';
 //import logo from './assets/logo.jpg';
 import logo from '../../assets/logo.jpg';
+
 export default function Register() {
   const [form, setForm] = useState({
     firstName: '',
