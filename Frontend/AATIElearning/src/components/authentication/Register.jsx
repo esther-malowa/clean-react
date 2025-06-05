@@ -1,183 +1,262 @@
-/**import React, { useState } from 'react';
-import logo from './assets/logo.jpg';
-
-export default function Register() {
-  const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    username: '',
-    password: '',
-    confirmPassword: ''
-  });
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (form.password !== form.confirmPassword) {
-      alert('Passwords do not match!');
-      return;
-    }
-    console.log('Form Submitted', form);
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-primaryGreen">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-full max-w-md">
-        
-        {/* Logo Section *}
-        <div className="flex justify-center mb-4">
-          <img src={logo} alt="Logo" className="h-16 w-16 rounded-full shadow-md" />
-        </div>
-        
-        <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
-
-        <input
-          name="firstName"
-          placeholder="First Name"
-          value={form.firstName}
-          onChange={handleChange}
-          className="mb-3 w-full p-2 border rounded"
-          required
-        />
-        <input
-          name="lastName"
-          placeholder="Last Name"
-          value={form.lastName}
-          onChange={handleChange}
-          className="mb-3 w-full p-2 border rounded"
-          required
-        />
-        <input
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
-          className="mb-3 w-full p-2 border rounded"
-          required
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          className="mb-3 w-full p-2 border rounded"
-          required
-        />
-        <input
-          name="confirmPassword"
-          type="password"
-          placeholder="Confirm Password"
-          value={form.confirmPassword}
-          onChange={handleChange}
-          className="mb-3 w-full p-2 border rounded"
-          required
-        />
-        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-          Sign Up
-        </button>
-      </form>
-    </div>
-  );
-}
-<p className="text-sm mt-4 text-center">
-  Already have an account? <a href="/login" className="text-blue-600 hover:underline">Login</a>
-</p>**/
-
-import React, { useState } from 'react';
-//import logo from './assets/logo.jpg';
+import { useState } from 'react';
+import { HiEye, HiEyeOff } from 'react-icons/hi';
 import logo from '../../assets/logo.jpg';
 
-export default function Register() {
-  const [form, setForm] = useState({
+export default function AATISignUpForm() {
+  const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    username: '',
+    email: '',
+    mobile: '',
     password: '',
     confirmPassword: ''
   });
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordErrors, setPasswordErrors] = useState({
+    password: '',
+    confirmPassword: ''
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    if (name === 'password') {
+      validatePassword(value);
+    }
+    if (name === 'confirmPassword') {
+      validateConfirmPassword(value, formData.password);
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (form.password !== form.confirmPassword) {
-      alert('Passwords do not match!');
-      return;
+  const validatePassword = (password) => {
+    let error = '';
+    if (password.length < 8) {
+      error = 'Password must be at least 8 characters long';
+    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+      error = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
     }
-    console.log('Form Submitted', form);
+    setPasswordErrors(prev => ({ ...prev, password: error }));
+  };
+
+  const validateConfirmPassword = (confirmPassword, currentPassword) => {
+    let error = '';
+    if (confirmPassword !== currentPassword) {
+      error = 'Passwords do not match';
+    }
+    setPasswordErrors(prev => ({ ...prev, confirmPassword: error }));
+  };
+
+  const handleSubmit = () => {
+    validatePassword(formData.password);
+    validateConfirmPassword(formData.confirmPassword, formData.password);
+
+    if (!passwordErrors.password && !passwordErrors.confirmPassword && 
+        formData.password === formData.confirmPassword) {
+      console.log('Form submitted:', formData);
+    } else {
+      console.log('Form validation failed');
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#58B440] px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 sm:p-8 rounded-lg shadow-md w-full max-w-sm sm:max-w-md"
-      >
-        <div className="flex justify-center mb-4">
-          <img src={logo} alt="Logo" className="h-16 sm:h-20 object-contain" />
+    <div className="min-h-screen py-12 px-4" style={{ backgroundColor: '#F2FBF3' }}>
+      <div className="max-w-4xl max-sm:max-w-lg mx-auto">
+        <div className="text-center mb-12 sm:mb-16">
+          <div className="mb-6 flex justify-center">
+            <img
+              src={logo}
+              alt="Logo"
+              className="w-24 h-24 rounded-full object-cover shadow-md"
+            />
+          </div>
+          <h1 className="text-3xl font-bold mb-4" style={{ color: '#0F6317' }}>
+            Sign up into your account
+          </h1>
+          <p className="text-lg" style={{ color: '#6B9F70' }}>
+            Skill Up, Rise Higher
+          </p>
         </div>
 
-        <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center text-gray-800">
-          Register
-        </h2>
+        <div className="bg-white rounded-xl shadow-lg p-8" style={{ borderTop: '4px solid #58B440' }}>
+          <div className="grid sm:grid-cols-2 gap-8">
+            <div>
+              <label className="text-lg font-semibold mb-3 block" style={{ color: '#0F6317' }}>
+                First Name
+              </label>
+              <input 
+                name="firstName" 
+                type="text" 
+                value={formData.firstName}
+                onChange={handleInputChange}
+                className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80" 
+                style={{ 
+                  backgroundColor: '#FBFEFA', 
+                  color: '#0F6317',
+                  borderColor: '#58B440'
+                }}
+                placeholder="Enter your first name" 
+              />
+            </div>
 
-        <input
-          name="firstName"
-          placeholder="First Name"
-          value={form.firstName}
-          onChange={handleChange}
-          className="mb-3 w-full p-2 border rounded text-sm"
-          required
-        />
-        <input
-          name="lastName"
-          placeholder="Last Name"
-          value={form.lastName}
-          onChange={handleChange}
-          className="mb-3 w-full p-2 border rounded text-sm"
-          required
-        />
-        <input
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
-          className="mb-3 w-full p-2 border rounded text-sm"
-          required
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          className="mb-3 w-full p-2 border rounded text-sm"
-          required
-        />
-        <input
-          name="confirmPassword"
-          type="password"
-          placeholder="Confirm Password"
-          value={form.confirmPassword}
-          onChange={handleChange}
-          className="mb-4 w-full p-2 border rounded text-sm"
-          required
-        />
+            <div>
+              <label className="text-lg font-semibold mb-3 block" style={{ color: '#0F6317' }}>
+                Last Name
+              </label>
+              <input 
+                name="lastName" 
+                type="text" 
+                value={formData.lastName}
+                onChange={handleInputChange}
+                className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80" 
+                style={{ 
+                  backgroundColor: '#FBFEFA', 
+                  color: '#0F6317',
+                  borderColor: '#58B440'
+                }}
+                placeholder="Enter your last name" 
+              />
+            </div>
 
-        <button
-          type="submit"
-          className="w-full bg-green-600 hover:bg-green-700 text-white p-2 rounded text-sm sm:text-base"
-        >
-          Sign Up
-        </button>
-      </form>
+            <div>
+              <label className="text-lg font-semibold mb-3 block" style={{ color: '#0F6317' }}>
+                Email Id
+              </label>
+              <input 
+                name="email" 
+                type="email" 
+                value={formData.email}
+                onChange={handleInputChange}
+                className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80" 
+                style={{ 
+                  backgroundColor: '#FBFEFA', 
+                  color: '#0F6317',
+                  borderColor: '#58B440'
+                }}
+                placeholder="Enter your email address" 
+              />
+            </div>
+
+            <div>
+              <label className="text-lg font-semibold mb-3 block" style={{ color: '#0F6317' }}>
+                Mobile No.
+              </label>
+              <input 
+                name="mobile" 
+                type="tel" 
+                value={formData.mobile}
+                onChange={handleInputChange}
+                className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80" 
+                style={{ 
+                  backgroundColor: '#FBFEFA', 
+                  color: '#0F6317',
+                  borderColor: '#58B440'
+                }}
+                placeholder="Enter your mobile number" 
+              />
+            </div>
+
+            <div>
+              <label className="text-lg font-semibold mb-3 block" style={{ color: '#0F6317' }}>
+                Password
+              </label>
+              <div className="relative">
+                <input 
+                  name="password" 
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className="w-full text-base px-4 py-4 pr-12 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80" 
+                  style={{ 
+                    backgroundColor: '#FBFEFA', 
+                    color: '#0F6317',
+                    borderColor: passwordErrors.password ? '#DB5260' : '#58B440'
+                  }}
+                  placeholder="Enter your password" 
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 focus:outline-none"
+                  style={{ color: '#6B9F70' }}
+                >
+                  {showPassword ? <HiEyeOff size={20} /> : <HiEye size={20} />}
+                </button>
+              </div>
+              {passwordErrors.password && (
+                <p className="text-sm mt-2" style={{ color: '#DB5260' }}>
+                  {passwordErrors.password}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="text-lg font-semibold mb-3 block" style={{ color: '#0F6317' }}>
+                Confirm Password
+              </label>
+              <div className="relative">
+                <input 
+                  name="confirmPassword" 
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  className="w-full text-base px-4 py-4 pr-12 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80" 
+                  style={{ 
+                    backgroundColor: '#FBFEFA', 
+                    color: '#0F6317',
+                    borderColor: passwordErrors.confirmPassword ? '#DB5260' : '#58B440'
+                  }}
+                  placeholder="Confirm your password" 
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 focus:outline-none"
+                  style={{ color: '#6B9F70' }}
+                >
+                  {showConfirmPassword ? <HiEyeOff size={20} /> : <HiEye size={20} />}
+                </button>
+              </div>
+              {passwordErrors.confirmPassword && (
+                <p className="text-sm mt-2" style={{ color: '#DB5260' }}>
+                  {passwordErrors.confirmPassword}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-12">
+            <button 
+              type="button" 
+              onClick={handleSubmit}
+              className="mx-auto block py-4 px-12 text-lg font-semibold tracking-wider rounded-lg text-white transition-all duration-300 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-opacity-50 cursor-pointer transform hover:-translate-y-1"
+              style={{ backgroundColor: '#58B440' }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#428358';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#58B440';
+              }}
+            >
+              Sign up
+            </button>
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-lg" style={{ color: '#6B9F70' }}>
+              Already have an account? 
+              <span className="ml-2 font-semibold cursor-pointer hover:underline transition-colors duration-300" style={{ color: '#F18233' }}>
+                Sign in
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
-

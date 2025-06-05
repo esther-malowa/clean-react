@@ -1,11 +1,7 @@
-/*import React, { useState } from 'react';
-import logo from './assets/logo.jpg';
+import React, { useState } from 'react';
 
 export default function Login() {
-  const [form, setForm] = useState({
-    username: '',
-    password: ''
-  });
+  const [form, setForm] = useState({ username: '', password: '' });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -13,93 +9,64 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Login Submitted', form);
+    console.log('Logging in with', form);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-primaryGreen">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-full max-w-md">
-        {/* Logo *}
-        <div className="flex justify-center mb-4">
-          <img src={logo} alt="Logo" className="h-16 w-16 rounded-full shadow-md" />
+    <div className="flex flex-col lg:flex-row h-screen">
+      {/* Left side - Image */}
+      <div
+        className="hidden lg:block lg:w-1/2 bg-cover bg-center"
+        style={{ backgroundImage: 'url(your-image-url.jpg)' }}
+      >
+        {/* Replace 'your-image-url.jpg' with the actual image URL */}
+      </div>
+
+      {/* Right side - Form */}
+      <div className="w-full lg:w-1/2 h-screen lg:h-auto flex items-start lg:items-center justify-center bg-gray-100 p-6">
+        <div className="w-full max-w-md flex flex-col">
+          <h2 className="text-2xl font-bold text-center mb-4">Welcome Back</h2>
+          <p className="text-center mb-6">Sign in to continue your journey</p>
+          <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md flex flex-col flex-grow">
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">Username</label>
+              <input
+                name="username"
+                placeholder="Enter your username"
+                value={form.username}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">Password</label>
+              <input
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                value={form.password}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600 transition mt-auto"
+            >
+              Sign In
+            </button>
+            <div className="text-center mt-4">
+              Don't have an account?{' '}
+              <a href="#" className="text-green-500 hover:underline">
+                Sign up here
+              </a>
+            </div>
+          </form>
         </div>
-
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-
-        <input
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
-          className="mb-3 w-full p-2 border rounded"
-          required
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          className="mb-3 w-full p-2 border rounded"
-          required
-        />
-        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-          Login
-        </button>
-      </form>
+      </div>
     </div>
   );
 }
 
-<p className="text-sm mt-4 text-center">
-  Don't have an account? <a href="/" className="text-blue-600 hover:underline">Register</a>
-</p>
-*/
-
-import React, { useState } from 'react'; //import logo from './assets/logo.jpg';
-import logo from '../../assets/logo.jpg';
-export default function Login() {
-  const [form, setForm] = useState({ username: '', password: '' });
-
-  const handleChange = (e) => { setForm({ ...form, [e.target.name]: e.target.value }); };
-
-  const handleSubmit = (e) => { e.preventDefault(); console.log('Logging in with', form); };
-
-  return (<div className="min-h-screen flex items-center justify-center bg-[#58B440] px-4"> <form
-    onSubmit={handleSubmit}
-    className="bg-white p-6 sm:p-8 rounded-lg shadow-md w-full max-w-sm sm:max-w-md"
-  > <div className="flex justify-center mb-4"> <img src={logo} alt="Logo" className="h-16 sm:h-20 object-contain" /> </div>
-
-    <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center text-gray-800">
-      Login
-    </h2>
-
-    <input
-      name="username"
-      placeholder="Username"
-      value={form.username}
-      onChange={handleChange}
-      className="mb-3 w-full p-2 border rounded text-sm"
-      required
-    />
-    <input
-      name="password"
-      type="password"
-      placeholder="Password"
-      value={form.password}
-      onChange={handleChange}
-      className="mb-4 w-full p-2 border rounded text-sm"
-      required
-    />
-
-    <button
-      type="submit"
-      className="w-full bg-green-600 hover:bg-green-700 text-white p-2 rounded text-sm sm:text-base"
-    >
-      Login
-    </button>
-  </form>
-  </div>
-
-  );
-}
