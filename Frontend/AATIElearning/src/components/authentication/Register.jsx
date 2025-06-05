@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
 import logo from '../../assets/logo.jpg';
+import { Link } from 'react-router-dom';
 
 export default function AATISignUpForm() {
   const [formData, setFormData] = useState({
@@ -253,6 +254,12 @@ export default function AATISignUpForm() {
               <span className="ml-2 font-semibold cursor-pointer hover:underline transition-colors duration-300" style={{ color: '#F18233' }}>
                 Sign in
               </span>
+            </p>
+            <p className="text-lg" style={{ color: '#6B9F70' }}>
+              Forgot your password?
+              <Link to='/reset-password' className="ml-2 font-semibold cursor-pointer hover:underline transition-colors duration-300" style={{ color: '#F18233' }}>
+                Reset password
+              </Link>
             </p>
           </div>
         </div>
