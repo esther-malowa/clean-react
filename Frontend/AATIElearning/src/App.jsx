@@ -1,11 +1,9 @@
-// App.jsx
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Register from './components/authentication/Register';
 import Login from './components/authentication/login';
 import LandingPage from './components/landing_page/LandingPage';
-import ForgotPassword from './components/landing_page/ForgotPassword';
-import ResetPassword from './components/landing_page/ResetPassword';
+import ForgotPassword from './components/authentication/ForgotPassword';
+import ResetPassword from './components/authentication/ResetPassword';
 
 function App() {
   return (
