@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
 import logo from '../../assets/logo.jpg';
 import { Link } from 'react-router-dom';
+import Button from '../form/Button';
 
 export default function AATISignUpForm() {
   const [formData, setFormData] = useState({
@@ -19,6 +20,8 @@ export default function AATISignUpForm() {
     password: '',
     confirmPassword: ''
   });
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -29,6 +32,8 @@ export default function AATISignUpForm() {
 
     if (name === 'password') {
       validatePassword(value);
+      // Also check confirm password again because password changed
+      validateConfirmPassword(formData.confirmPassword, value);
     }
     if (name === 'confirmPassword') {
       validateConfirmPassword(value, formData.password);
@@ -37,13 +42,17 @@ export default function AATISignUpForm() {
 
   const validatePassword = (password) => {
     let error = '';
+
     if (password.length < 8) {
       error = 'Password must be at least 8 characters long';
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
       error = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
     }
+
     setPasswordErrors(prev => ({ ...prev, password: error }));
+    return error === ''; // return true if no error
   };
+
 
   const validateConfirmPassword = (confirmPassword, currentPassword) => {
     let error = '';
@@ -53,23 +62,49 @@ export default function AATISignUpForm() {
     setPasswordErrors(prev => ({ ...prev, confirmPassword: error }));
   };
 
-  const handleSubmit = () => {
+  const isFormValid =
+    formData.firstName.trim() &&
+    formData.lastName.trim() &&
+    formData.email.trim() &&
+    formData.mobile.trim() &&
+    formData.password &&
+    formData.confirmPassword &&
+    !passwordErrors.password &&
+    !passwordErrors.confirmPassword;
+
+  const handleSubmit = async () => {
     validatePassword(formData.password);
     validateConfirmPassword(formData.confirmPassword, formData.password);
 
-    if (!passwordErrors.password && !passwordErrors.confirmPassword && 
-        formData.password === formData.confirmPassword) {
-      console.log('Form submitted:', formData);
-    } else {
-      console.log('Form validation failed');
-    }
-  };
+    try {
+      setIsLoading(true)
+      const res = await fetch('/api/login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          usernameOrEmail: formData.usernameOrEmail.trim(),
+          password: formData.password
+        })
+      });
 
+      const data = await res.json();
+
+      if (res.ok) {
+        setMsg(data.message || 'Login successful!');
+      } else {
+        setError(data.message || 'Login failed');
+      }
+    } catch (err) {
+      setError('Network error. Please try again.');
+    } finally {
+      setIsLoading(false)
+    }
+  }
   return (
     <div className="min-h-screen py-12 px-4" style={{ backgroundColor: '#F2FBF3' }}>
       <div className="max-w-4xl max-sm:max-w-lg mx-auto">
         <div className="text-center mb-12 sm:mb-16">
-          <div className="mb-6 flex justify-center">
+          <div className="mb-4 flex justify-center">
             <img
               src={logo}
               alt="Logo"
@@ -79,9 +114,6 @@ export default function AATISignUpForm() {
           <h1 className="text-3xl font-bold mb-4" style={{ color: '#0F6317' }}>
             Sign up into your account
           </h1>
-          <p className="text-lg" style={{ color: '#6B9F70' }}>
-            Skill Up, Rise Higher
-          </p>
         </div>
 
         <div className="bg-white rounded-xl shadow-lg p-8" style={{ borderTop: '4px solid #58B440' }}>
@@ -90,18 +122,18 @@ export default function AATISignUpForm() {
               <label className="text-lg font-semibold mb-3 block" style={{ color: '#0F6317' }}>
                 First Name
               </label>
-              <input 
-                name="firstName" 
-                type="text" 
+              <input
+                name="firstName"
+                type="text"
                 value={formData.firstName}
                 onChange={handleInputChange}
-                className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80" 
-                style={{ 
-                  backgroundColor: '#FBFEFA', 
+                className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80"
+                style={{
+                  backgroundColor: '#FBFEFA',
                   color: '#0F6317',
                   borderColor: '#58B440'
                 }}
-                placeholder="Enter your first name" 
+                placeholder="Enter your first name"
               />
             </div>
 
@@ -109,18 +141,18 @@ export default function AATISignUpForm() {
               <label className="text-lg font-semibold mb-3 block" style={{ color: '#0F6317' }}>
                 Last Name
               </label>
-              <input 
-                name="lastName" 
-                type="text" 
+              <input
+                name="lastName"
+                type="text"
                 value={formData.lastName}
                 onChange={handleInputChange}
-                className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80" 
-                style={{ 
-                  backgroundColor: '#FBFEFA', 
+                className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80"
+                style={{
+                  backgroundColor: '#FBFEFA',
                   color: '#0F6317',
                   borderColor: '#58B440'
                 }}
-                placeholder="Enter your last name" 
+                placeholder="Enter your last name"
               />
             </div>
 
@@ -128,18 +160,18 @@ export default function AATISignUpForm() {
               <label className="text-lg font-semibold mb-3 block" style={{ color: '#0F6317' }}>
                 Email Id
               </label>
-              <input 
-                name="email" 
-                type="email" 
+              <input
+                name="email"
+                type="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80" 
-                style={{ 
-                  backgroundColor: '#FBFEFA', 
+                className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80"
+                style={{
+                  backgroundColor: '#FBFEFA',
                   color: '#0F6317',
                   borderColor: '#58B440'
                 }}
-                placeholder="Enter your email address" 
+                placeholder="Enter your email address"
               />
             </div>
 
@@ -147,18 +179,18 @@ export default function AATISignUpForm() {
               <label className="text-lg font-semibold mb-3 block" style={{ color: '#0F6317' }}>
                 Mobile No.
               </label>
-              <input 
-                name="mobile" 
-                type="tel" 
+              <input
+                name="mobile"
+                type="tel"
                 value={formData.mobile}
                 onChange={handleInputChange}
-                className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80" 
-                style={{ 
-                  backgroundColor: '#FBFEFA', 
+                className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80"
+                style={{
+                  backgroundColor: '#FBFEFA',
                   color: '#0F6317',
                   borderColor: '#58B440'
                 }}
-                placeholder="Enter your mobile number" 
+                placeholder="Enter your mobile number"
               />
             </div>
 
@@ -167,18 +199,18 @@ export default function AATISignUpForm() {
                 Password
               </label>
               <div className="relative">
-                <input 
-                  name="password" 
+                <input
+                  name="password"
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="w-full text-base px-4 py-4 pr-12 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80" 
-                  style={{ 
-                    backgroundColor: '#FBFEFA', 
+                  className="w-full text-base px-4 py-4 pr-12 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80"
+                  style={{
+                    backgroundColor: '#FBFEFA',
                     color: '#0F6317',
                     borderColor: passwordErrors.password ? '#DB5260' : '#58B440'
                   }}
-                  placeholder="Enter your password" 
+                  placeholder="Enter your password"
                 />
                 <button
                   type="button"
@@ -201,18 +233,18 @@ export default function AATISignUpForm() {
                 Confirm Password
               </label>
               <div className="relative">
-                <input 
-                  name="confirmPassword" 
+                <input
+                  name="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className="w-full text-base px-4 py-4 pr-12 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80" 
-                  style={{ 
-                    backgroundColor: '#FBFEFA', 
+                  className="w-full text-base px-4 py-4 pr-12 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80"
+                  style={{
+                    backgroundColor: '#FBFEFA',
                     color: '#0F6317',
                     borderColor: passwordErrors.confirmPassword ? '#DB5260' : '#58B440'
                   }}
-                  placeholder="Confirm your password" 
+                  placeholder="Confirm your password"
                 />
                 <button
                   type="button"
@@ -230,30 +262,19 @@ export default function AATISignUpForm() {
               )}
             </div>
           </div>
+           {error && (
+            <p className="text-sm mt-4 text-center font-semibold" style={{ color: '#DB5260' }}>{error}</p>
+          )}
+          
 
-          <div className="mt-12">
-            <button 
-              type="button" 
-              onClick={handleSubmit}
-              className="mx-auto block py-4 px-12 text-lg font-semibold tracking-wider rounded-lg text-white transition-all duration-300 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-opacity-50 cursor-pointer transform hover:-translate-y-1"
-              style={{ backgroundColor: '#58B440' }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = '#428358';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = '#58B440';
-              }}
-            >
-              Sign up
-            </button>
-          </div>
+          <Button title="Sign up" handleSubmit={handleSubmit} formValid={isFormValid} loading={isLoading} />
 
           <div className="mt-8 text-center">
             <p className="text-lg" style={{ color: '#6B9F70' }}>
-              Already have an account? 
-              <span className="ml-2 font-semibold cursor-pointer hover:underline transition-colors duration-300" style={{ color: '#F18233' }}>
+              Already have an account?
+              <Link to='/login' className="ml-2 font-semibold cursor-pointer hover:underline transition-colors duration-300" style={{ color: '#F18233' }}>
                 Sign in
-              </span>
+              </Link>
             </p>
             <p className="text-lg" style={{ color: '#6B9F70' }}>
               Forgot your password?

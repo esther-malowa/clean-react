@@ -1,82 +1,100 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { HiMail, HiOutlineRefresh } from 'react-icons/hi';
+import Button from '../form/Button';
 
-export default function ForgotPassword() {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+const ForgotPassword = () => {
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleChange = (e) => {
+    setEmail(e.target.value);
+    setError('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!email) {
+      setError('Email is required');
+      return;
+    }
+
     setLoading(true);
-    setMessage("");
+    setError('');
 
     try {
-      const res = await fetch("/api/forgot-password.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/forgot-password.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
 
       const data = await res.json();
-      setMessage(data.message);
-    } catch (error) {
-      setMessage("Something went wrong. Please try again.");
+      if (res.ok) {
+        setSuccess(true);
+      } else {
+        setError(data.message || 'Something went wrong');
+      }
+    } catch {
+      setError('Something went wrong. Please try again.');
     }
+
     setLoading(false);
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-8 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl shadow-lg">
-      <h2 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
-        Forgot Password
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <input
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-          type="email"
-          placeholder="Enter your email address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          autoFocus
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full flex items-center justify-center gap-2 bg-indigo-600 text-white font-semibold py-3 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition ${
-            loading ? "cursor-not-allowed opacity-70" : ""
-          }`}
-        >
-          {loading && (
-            <svg
-              className="animate-spin h-5 w-5 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-              ></path>
-            </svg>
-          )}
-          Send Reset Link
-        </button>
-      </form>
-      {message && (
-        <p className="mt-6 text-center text-sm font-medium text-green-600">
-          {message}
-        </p>
-      )}
+    <div className="flex min-h-screen items-center justify-center bg-[#F2FBF3] px-4">
+      <div className="w-full max-w-lg rounded-lg border border-green-200 bg-white p-6 sm:p-10 shadow-lg">
+        {/* Replace DummyLogo with your actual logo */}
+        <div className="mb-6 text-center">
+          <div className="mx-auto h-16 w-16 rounded-full bg-green-100 flex items-center justify-center">
+            <HiMail size={32} className="text-green-600" />
+          </div>
+        </div>
+
+        <h2 className="mb-6 text-center text-2xl font-semibold text-gray-800">Forgot Password?</h2>
+
+        {success ? (
+          <p className="mb-6 text-center text-green-600">
+            Email has been sent. Please check your inbox.
+          </p>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block mb-2 font-medium text-gray-700">Email Address</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-green-600">
+                  <HiMail size={20} />
+                </span>
+                <input
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  className="w-full rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  required
+                />
+              </div>
+              {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+            </div>
+
+            <Button loading={loading} title='Send Password Reset Link' handleSubmit={handleSubmit} formValid = {!error} />
+          </form>
+        )}
+
+        <div className="mt-6 text-center">
+          <a
+            href="/login"
+            className="text-sm font-medium text-blue-600 hover:underline"
+          >
+            Back to Login
+          </a>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default ForgotPassword;

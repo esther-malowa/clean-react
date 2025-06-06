@@ -33,7 +33,7 @@ const LandingPage = () => {
 
     return (
         <div className="bg-white text-gray-800 font-sans">
-            <header className={`top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-1 transition-all duration-300 ${isScrolled ? 'fixed bg-green-700 bg-opacity-70 backdrop-blur-md' : 'fixed bg-green-500 backdrop-blur-sm'
+            <header className={`top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-1 transition-all duration-300 ${isScrolled ? 'fixed bg-white bg-opacity-70 backdrop-blur-md' : 'fixed bg-white backdrop-blur-sm'
                 }`}>
                 {/* Logo */}
                 <div className="flex items-center space-x-2">
@@ -42,11 +42,11 @@ const LandingPage = () => {
 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex space-x-6">
-                    <a href="#home" className="text-white hover:text-blue-200">Home</a>
-                    <a href="#pages" className="text-white hover:text-blue-200">Pages</a>
-                    <a href="#our-courses" className="text-white hover:text-blue-200">Our Courses</a>
-                    <a href="#blog" className="text-white hover:text-blue-200">Blog</a>
-                    <a href="#dashboard" className="text-white hover:text-blue-200">Dashboard</a>
+                    <a href="#home" className="text-green-700 hover:text-orange-700">Home</a>
+                    <a href="#pages" className="text-green-700 hover:text-orange-700">Pages</a>
+                    <a href="#our-courses" className="text-green-700 hover:text-orange-700">Our Courses</a>
+                    <a href="#blog" className="text-green-700 hover:text-orange-700">Blog</a>
+                    <a href="#dashboard" className="text-green-700 hover:text-orange-700">Dashboard</a>
                 </nav>
 
                 <div className="hidden md:block">
