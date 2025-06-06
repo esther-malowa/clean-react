@@ -3,13 +3,14 @@ import { HiEye, HiEyeOff } from 'react-icons/hi';
 import logo from '../../assets/logo.jpg';
 import { Link } from 'react-router-dom';
 import Button from '../form/Button';
+import BackendConnection from '../services/services';
 
 export default function AATISignUpForm() {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
-    mobile: '',
+    username: '',
     password: '',
     confirmPassword: ''
   });
@@ -63,10 +64,10 @@ export default function AATISignUpForm() {
   };
 
   const isFormValid =
-    formData.firstName.trim() &&
-    formData.lastName.trim() &&
+    formData.first_name.trim() &&
+    formData.last_name.trim() &&
     formData.email.trim() &&
-    formData.mobile.trim() &&
+    formData.username.trim() &&
     formData.password &&
     formData.confirmPassword &&
     !passwordErrors.password &&
@@ -123,9 +124,9 @@ export default function AATISignUpForm() {
                 First Name
               </label>
               <input
-                name="firstName"
+                name="first_name"
                 type="text"
-                value={formData.firstName}
+                value={formData.first_name}
                 onChange={handleInputChange}
                 className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80"
                 style={{
@@ -142,9 +143,9 @@ export default function AATISignUpForm() {
                 Last Name
               </label>
               <input
-                name="lastName"
+                name="last_name"
                 type="text"
-                value={formData.lastName}
+                value={formData.last_name}
                 onChange={handleInputChange}
                 className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80"
                 style={{
@@ -177,12 +178,12 @@ export default function AATISignUpForm() {
 
             <div>
               <label className="text-lg font-semibold mb-3 block" style={{ color: '#0F6317' }}>
-                Mobile No.
+                Username
               </label>
               <input
-                name="mobile"
+                name="username"
                 type="tel"
-                value={formData.mobile}
+                value={formData.username}
                 onChange={handleInputChange}
                 className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80"
                 style={{
@@ -190,7 +191,7 @@ export default function AATISignUpForm() {
                   color: '#0F6317',
                   borderColor: '#58B440'
                 }}
-                placeholder="Enter your mobile number"
+                placeholder="Enter your username"
               />
             </div>
 
