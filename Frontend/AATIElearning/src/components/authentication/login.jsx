@@ -3,19 +3,21 @@ import { HiEye, HiEyeOff } from 'react-icons/hi';
 import logo from '../../assets/logo.jpg';
 import { Link } from 'react-router-dom';
 import Button from '../form/Button';
+import Backendconnection from '../services/services'
+import StatusMessage from '../Messages/StatusMessage';
 
 export default function Login() {
   const [formData, setFormData] = useState({
-    usernameOrEmail: '',
+    username_or_email: '',
     password: ''
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [msg, setMsg] = useState('');
+  const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const isFormValid = formData.usernameOrEmail.trim() && formData.password;
+  const isFormValid = formData.username_or_email.trim() && formData.password;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -27,9 +29,9 @@ export default function Login() {
 
   const handleSubmit = async () => {
     setError('');
-    setMsg('');
+    setSuccess('');
 
-    if (!formData.usernameOrEmail.trim()) {
+    if (!formData.username_or_email.trim()) {
       setError('Username or email is required');
       return;
     }
@@ -40,24 +42,11 @@ export default function Login() {
 
     try {
       setIsLoading(true);
-      const res = await fetch('/api/login.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          usernameOrEmail: formData.usernameOrEmail.trim(),
-          password: formData.password
-        })
-      });
+      const response = await Backendconnection.login(formData)
+      setSuccess(response.success)
 
-      const data = await res.json();
-
-      if (res.ok) {
-        setMsg(data.message || 'Login successful!');
-      } else {
-        setError(data.message || 'Login failed');
-      }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err.message);
     }finally {
       setIsLoading(false);
     }
@@ -86,9 +75,9 @@ export default function Login() {
                 Username or Email
               </label>
               <input 
-                name="usernameOrEmail" 
+                name="username_or_email" 
                 type="text" 
-                value={formData.usernameOrEmail}
+                value={formData.username_or_email}
                 onChange={handleInputChange}
                 className="w-full text-base px-4 py-4 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80" 
                 style={{ 
@@ -131,10 +120,10 @@ export default function Login() {
           </div>
 
           {error && (
-            <p className="text-sm mt-4 text-center font-semibold" style={{ color: '#DB5260' }}>{error}</p>
+           <StatusMessage message={error} type='error' duration={7000} />
           )}
-          {msg && (
-            <p className="text-sm mt-4 text-center font-semibold" style={{ color: '#58B440' }}>{msg}</p>
+          {success && (
+            <StatusMessage message={success} type='success' duration={7000} />
           )}
 
           <Button title={"Sign in"} handleSubmit={handleSubmit} formValid={isFormValid} loading={isLoading} />
@@ -148,7 +137,7 @@ export default function Login() {
             </p>
             <p className="text-lg" style={{ color: '#6B9F70' }}>
               Forgot your password?
-              <Link to='/reset-password' className="ml-2 font-semibold cursor-pointer hover:underline transition-colors duration-300" style={{ color: '#F18233' }}>
+              <Link to='/forgot-password' className="ml-2 font-semibold cursor-pointer hover:underline transition-colors duration-300" style={{ color: '#F18233' }}>
                 Reset password
               </Link>
             </p>

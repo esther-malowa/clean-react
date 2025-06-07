@@ -4,25 +4,30 @@ import logo from '../../assets/logo.jpg';
 import { Link } from 'react-router-dom';
 import Button from '../form/Button';
 import BackendConnection from '../services/services';
+import { useNavigate } from 'react-router-dom';
+import StatusMessage from '../Messages/StatusMessage';
 
-export default function AATISignUpForm() {
+export default function Register() {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
     email: '',
     username: '',
     password: '',
-    confirmPassword: ''
+    confirm_password: ''
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordErrors, setPasswordErrors] = useState({
     password: '',
-    confirmPassword: ''
+    confirm_password: ''
   });
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [success, setSuccess] = useState('')
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -34,9 +39,9 @@ export default function AATISignUpForm() {
     if (name === 'password') {
       validatePassword(value);
       // Also check confirm password again because password changed
-      validateConfirmPassword(formData.confirmPassword, value);
+      validateConfirmPassword(formData.confirm_password, value);
     }
-    if (name === 'confirmPassword') {
+    if (name === 'confirm_password') {
       validateConfirmPassword(value, formData.password);
     }
   };
@@ -55,12 +60,12 @@ export default function AATISignUpForm() {
   };
 
 
-  const validateConfirmPassword = (confirmPassword, currentPassword) => {
+  const validateConfirmPassword = (confirm_password, currentPassword) => {
     let error = '';
-    if (confirmPassword !== currentPassword) {
+    if (confirm_password !== currentPassword) {
       error = 'Passwords do not match';
     }
-    setPasswordErrors(prev => ({ ...prev, confirmPassword: error }));
+    setPasswordErrors(prev => ({ ...prev, confirm_password: error }));
   };
 
   const isFormValid =
@@ -69,34 +74,26 @@ export default function AATISignUpForm() {
     formData.email.trim() &&
     formData.username.trim() &&
     formData.password &&
-    formData.confirmPassword &&
+    formData.confirm_password &&
     !passwordErrors.password &&
-    !passwordErrors.confirmPassword;
+    !passwordErrors.confirm_password;
 
   const handleSubmit = async () => {
     validatePassword(formData.password);
-    validateConfirmPassword(formData.confirmPassword, formData.password);
+    validateConfirmPassword(formData.confirm_password, formData.password);
 
     try {
+      setError('')
       setIsLoading(true)
-      const res = await fetch('/api/login.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          usernameOrEmail: formData.usernameOrEmail.trim(),
-          password: formData.password
-        })
-      });
+      const response = await BackendConnection.register(formData);
+      localStorage.setItem('email', formData.email)
+      setSuccess(response.success)
 
-      const data = await res.json();
-
-      if (res.ok) {
-        setMsg(data.message || 'Login successful!');
-      } else {
-        setError(data.message || 'Login failed');
-      }
+      setTimeout(() => {
+        navigate('/activate-account')
+      }, 3000)
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err.message || 'Something went wrong.');
     } finally {
       setIsLoading(false)
     }
@@ -235,15 +232,15 @@ export default function AATISignUpForm() {
               </label>
               <div className="relative">
                 <input
-                  name="confirmPassword"
+                  name="confirm_password"
                   type={showConfirmPassword ? "text" : "password"}
-                  value={formData.confirmPassword}
+                  value={formData.confirm_password}
                   onChange={handleInputChange}
                   className="w-full text-base px-4 py-4 pr-12 rounded-lg border-2 transition-all duration-300 focus:outline-none focus:border-opacity-80"
                   style={{
                     backgroundColor: '#FBFEFA',
                     color: '#0F6317',
-                    borderColor: passwordErrors.confirmPassword ? '#DB5260' : '#58B440'
+                    borderColor: passwordErrors.confirm_password ? '#DB5260' : '#58B440'
                   }}
                   placeholder="Confirm your password"
                 />
@@ -256,17 +253,20 @@ export default function AATISignUpForm() {
                   {showConfirmPassword ? <HiEyeOff size={20} /> : <HiEye size={20} />}
                 </button>
               </div>
-              {passwordErrors.confirmPassword && (
+              {passwordErrors.confirm_password && (
                 <p className="text-sm mt-2" style={{ color: '#DB5260' }}>
-                  {passwordErrors.confirmPassword}
+                  {passwordErrors.confirm_password}
                 </p>
               )}
             </div>
           </div>
-           {error && (
-            <p className="text-sm mt-4 text-center font-semibold" style={{ color: '#DB5260' }}>{error}</p>
+          {error && (
+            <StatusMessage message={error} type='error' duration={7000} />
           )}
-          
+          {success && (
+            <StatusMessage message={success} type='success' duration={7000} />
+          )}
+
 
           <Button title="Sign up" handleSubmit={handleSubmit} formValid={isFormValid} loading={isLoading} />
 

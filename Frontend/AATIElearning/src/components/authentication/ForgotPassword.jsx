@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { HiMail, HiOutlineRefresh } from 'react-icons/hi';
 import Button from '../form/Button';
+import Backendconnection from '../services/services'
+import StatusMessage from '../Messages/StatusMessage';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -20,27 +22,17 @@ const ForgotPassword = () => {
       return;
     }
 
-    setLoading(true);
-    setError('');
-
     try {
-      const res = await fetch('/api/forgot-password.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        setSuccess(true);
-      } else {
-        setError(data.message || 'Something went wrong');
-      }
-    } catch {
-      setError('Something went wrong. Please try again.');
+      setLoading(true)
+      const response = await Backendconnection.forgotPasword(email)
+      setSuccess(response.success)
+    } catch(error){
+      console.log(error)
+      setError(error.message || "Something went Wrong")
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false);
+    
   };
 
   return (
@@ -56,9 +48,7 @@ const ForgotPassword = () => {
         <h2 className="mb-6 text-center text-2xl font-semibold text-gray-800">Forgot Password?</h2>
 
         {success ? (
-          <p className="mb-6 text-center text-green-600">
-            Email has been sent. Please check your inbox.
-          </p>
+          <StatusMessage message={success} type='success' autoDismiss={false} />
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
@@ -80,7 +70,7 @@ const ForgotPassword = () => {
               {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
             </div>
 
-            <Button loading={loading} title='Send Password Reset Link' handleSubmit={handleSubmit} formValid = {!error} />
+            <Button loading={loading} title='Send Password Reset Link' handleSubmit={handleSubmit} formValid={email} />
           </form>
         )}
 

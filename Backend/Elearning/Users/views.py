@@ -16,6 +16,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.conf import settings
 from django.core.mail import EmailMessage
+from django.shortcuts import redirect
 
 from .utils import token_generator
 from .serializers import RegisterUserSerializer, UserProfileSerializer, send_activation_email, EmailThread
@@ -39,7 +40,7 @@ class RegisterView(APIView):
             profile_data = UserProfileSerializer(profile).data
 
             return Response({
-                'success': 'User registered successfully',
+                'success': 'User registered successfully. Check your email to activate your account.',
                 'user': profile_data,
                 'tokens': {
                     'refresh': str(refresh),
@@ -50,7 +51,9 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
+    """Sign in the user using a username/email and a password"""
     permission_classes = []
+    authentication_classes = []
 
     def post(self, request):
         username_or_email = request.data.get('username_or_email')
@@ -65,7 +68,7 @@ class LoginView(APIView):
             else:
                 user = User.objects.get(username__iexact=username_or_email)
         except User.DoesNotExist:
-            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
         if not user.is_active:
             return Response({'error': 'Account is inactive. Please activate your account.'}, status=status.HTTP_403_FORBIDDEN)
@@ -83,7 +86,7 @@ class LoginView(APIView):
                 },
             }, status=status.HTTP_200_OK)
 
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
     """Logout the user by blacklisting the refresh token"""
@@ -100,6 +103,7 @@ class LogoutView(APIView):
 
 
 class MyProfileView(generics.RetrieveUpdateAPIView):
+    """Allow the user to view and edit their own profile."""
     serializer_class = UserProfileSerializer
     permission_classes = [IsOwnerorReadoOnly]
 
@@ -110,6 +114,7 @@ class MyProfileView(generics.RetrieveUpdateAPIView):
             raise NotFound("Profile not found.")
         
 class UserProfileDetailView(generics.RetrieveAPIView):
+    """Allow authenicated users to view another users profile."""
     serializer_class = UserProfileSerializer
     
     def get_object(self):
@@ -120,9 +125,10 @@ class UserProfileDetailView(generics.RetrieveAPIView):
             raise NotFound("Profile not found.")
             
 
-class ActivateAccount(APIView):
-    """Activate user account via email sent."""
-    permission_classes=[]
+class ActivateAccountView(APIView):
+    """Activate users account using email"""
+    permission_classes=[permissions.AllowAny, ]
+    authentication_classes = []
     def get(self, request, uidb64, token):
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
@@ -130,17 +136,16 @@ class ActivateAccount(APIView):
 
             # check if token has already been user.
             if not token_generator.check_token(user, token):
-                return Response("Invalid token.")
+                return redirect("http://localhost:5173/login")
             if user.is_active:
-                return Response("User already active.")
+                raise redirect("http://localhost:5173/login")
             user.is_active = True
             user.save()
-            return Response("Account activate successfully.")
+            return redirect("http://localhost:5173/account-activated")
         except Exception as e:
             return Response({"error": f"An unknown error occured {e}"})
 
-
-class ResendEmail(APIView):
+class ResendEmailView(APIView):
     """User requests the email be resent."""
     permission_classes=[]
 
@@ -163,9 +168,10 @@ class ResendEmail(APIView):
             return Response({"email_error": f"Request for a new link failed, {e}"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ResetPassword(APIView):
+class ForgotPasswordView(APIView):
     """Allows user generate a link they can use to set a new password."""
     permission_classes=[]
+    authentication_classes = []
     
     def post(self, request):
         email = request.data.get('email', '')
@@ -184,7 +190,7 @@ class ResetPassword(APIView):
                 uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
                 token = PasswordResetTokenGenerator().make_token(user)
                 domain = get_current_site(request).domain
-                link = reverse('set-new-password', kwargs= {
+                link = reverse('reset-password', kwargs= {
                     'uidb64': uidb64,
                     'token': token
                 })
@@ -198,11 +204,13 @@ class ResetPassword(APIView):
             # generic message to prevent exposing legit emails
             return Response({'success': "Please check your email to complete resetting your password"},status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({"error": "An error occured whiel trying to send the message"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": f"An error occurred while trying to send the message, {e}"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class SetNewPassword(APIView):
+class ResetPasswordView(APIView):
+    """Allow the user to set a new password after confirming their email"""
     permission_classes=[]
+    authentication_classes = []
     def post(self, request, uidb64, token):
         password = request.data.get('password', '')
         confirm_password = request.data.get('confirm_password', "")
@@ -226,6 +234,10 @@ class SetNewPassword(APIView):
             return Response({"success": "Password changed successfully."}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"password_error": "Error occured sending the email."}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def get(self, request, uidb64, token):
+        reset_url = f"http://localhost:5173/reset-password?uid={uidb64}&token={token}"
+        return redirect(reset_url)
 
 
 
