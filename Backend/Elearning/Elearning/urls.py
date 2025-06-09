@@ -28,12 +28,13 @@ schema_view = get_schema_view(
         description='Detailed documentation of APIs for the project.'
     ),
     public=True,
-    permission_classes = (permissions.AllowAny, ),
+    permission_classes = (permissions.AllowAny,),
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('Users.urls')),
+    path('books/', include('Books.urls')),
     path('documentation/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='api-documentation'),
     path('documentation/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
