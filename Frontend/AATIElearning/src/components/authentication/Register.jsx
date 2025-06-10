@@ -31,18 +31,19 @@ export default function Register() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    const trimmedValue = value ? value.trim(): value; // remove unnecessary spaces.
+
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: trimmedValue
     }));
 
     if (name === 'password') {
-      validatePassword(value);
-      // Also check confirm password again because password changed
-      validateConfirmPassword(formData.confirm_password, value);
+      validatePassword(trimmedValue);
+      validateConfirmPassword(formData.confirm_password, trimmedValue);
     }
     if (name === 'confirm_password') {
-      validateConfirmPassword(value, formData.password);
+      validateConfirmPassword(trimmedValue, formData.password);
     }
   };
 

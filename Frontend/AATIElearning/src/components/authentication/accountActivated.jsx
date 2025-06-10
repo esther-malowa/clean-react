@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 
 export default function AccountActivated() {
+  localStorage.removeItem('email')
   return (
     <div className="min-h-screen max-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#F2FBF3' }}>
       <div className="max-w-xl text-center bg-white p-10 rounded-xl shadow-lg" style={{ borderTop: '4px solid #58B440' }}>

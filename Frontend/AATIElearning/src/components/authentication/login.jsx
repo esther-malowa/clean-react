@@ -21,9 +21,11 @@ export default function Login() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    const trimmedValue = value? value.trim() : value;
+
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: trimmedValue
     }));
   };
 

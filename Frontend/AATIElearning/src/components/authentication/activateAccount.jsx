@@ -36,7 +36,7 @@ export default function ActivateAccount() {
           Check your email
         </h1>
         <p className="text-lg text-gray-700 mb-6">
-          Your account has been created. We’ve sent an activation link to your email. Please follow the link to activate your account.
+          Your account has been created. We’ve sent an activation link to your email <span className="font-bold">{email}</span>. Please follow the link to activate your account.
         </p>
         {success ? (
           < StatusMessage type="success" message={success} autoDismiss={false} />

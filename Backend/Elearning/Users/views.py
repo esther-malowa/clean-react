@@ -93,13 +93,24 @@ class LogoutView(APIView):
     def post(self, request):
         try:
             refresh_token = request.data.get('refresh_token')
-            if refresh_token:
-                token = RefreshToken(refresh_token)
-                token.blacklist()
-                return Response({"success": "Succesfully logged out."}, status=status.HTTP_200_OK)
-            return Response({"error": "Refresh token required."}, status=status.HTTP_400_BAD_REQUEST)
+            if not refresh_token:
+                return Response(
+                    {"error": "Refresh token required."}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(
+                {"success": "Successfully logged out."}, 
+                status=status.HTTP_200_OK
+            )
+            
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": str(e)}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class MyProfileView(generics.RetrieveUpdateAPIView):
@@ -155,7 +166,10 @@ class ResendEmailView(APIView):
         if not email:
             return Response({"email_error":"Email Field cannot be empty."}, status=status.HTTP_400_BAD_REQUEST)
         
-        user = User.objects.get(email=email)
+        user = User.objects.filter(email=email).first()
+        print("user =>", user)
+        if not user:
+            return Response({"error": "could not find user."}, status=status.HTTP_200_OK)
 
         if user.is_active:
             return Response({"email_error": "user is already active. Please log in instead"}, status=status.HTTP_400_BAD_REQUEST)
@@ -166,6 +180,7 @@ class ResendEmailView(APIView):
             return Response({"success": "Email was sent successfully."}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"email_error": f"Request for a new link failed, {e}"}, status=status.HTTP_400_BAD_REQUEST)
+        
 
 
 class ForgotPasswordView(APIView):
@@ -183,7 +198,7 @@ class ForgotPasswordView(APIView):
         except ValidationError as e:
             return Response({'email_error': 'Invalid email address'}, status=status.HTTP_400_BAD_REQUEST)
         
-        user = User.objects.get(email=email)
+        user = User.objects.filter(email=email).first()
         
         try:
             if user:
