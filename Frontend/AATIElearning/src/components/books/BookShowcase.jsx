@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import logo from "../../assets/logo.jpg";
 
 const popularBooks = [
   {
     title: "Atomic Habits",
     author: "James Clear",
     genre: "Self-help",
-    image: "https://m.media-amazon.com/images/I/91bYsX41DVL._AC_UF1000,1000_QL80_.jpg",
+    image:
+      "https://m.media-amazon.com/images/I/91bYsX41DVL._AC_UF1000,1000_QL80_.jpg",
   },
   {
     title: "Rich Dad Poor Dad",
@@ -17,7 +19,8 @@ const popularBooks = [
     title: "The Power of Habit",
     author: "Charles Duhigg",
     genre: "Self-help",
-    image: "https://images-na.ssl-images-amazon.com/images/I/51ejXdSceNL._SX329_BO1,204,203,200_.jpg",
+    image:
+      "https://images-na.ssl-images-amazon.com/images/I/51ejXdSceNL._SX329_BO1,204,203,200_.jpg",
   },
 ];
 
@@ -44,17 +47,27 @@ const otherBooks = [
     title: "Thinking, Fast and Slow",
     author: "Daniel Kahneman",
     genre: "Psychology",
-    image: "https://m.media-amazon.com/images/I/41J87aD8FJL._SX331_BO1,204,203,200_.jpg",
+    image:
+      "https://m.media-amazon.com/images/I/41J87aD8FJL._SX331_BO1,204,203,200_.jpg",
   },
   {
     title: "Influence",
     author: "Robert Cialdini",
     genre: "Psychology",
-    image: "https://m.media-amazon.com/images/I/51B6Y0JYPKL._SX331_BO1,204,203,200_.jpg",
+    image:
+      "https://m.media-amazon.com/images/I/51B6Y0JYPKL._SX331_BO1,204,203,200_.jpg",
   },
 ];
 
-const genres = ["All", "Self-help", "Finance", "Strategy", "Productivity", "Business", "Psychology"];
+const genres = [
+  "All",
+  "Self-help",
+  "Finance",
+  "Strategy",
+  "Productivity",
+  "Business",
+  "Psychology",
+];
 
 const BookShowcase = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -66,7 +79,8 @@ const BookShowcase = () => {
     const matchesSearch =
       book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       book.author.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesGenre = selectedGenre === "All" || book.genre === selectedGenre;
+    const matchesGenre =
+      selectedGenre === "All" || book.genre === selectedGenre;
     return matchesSearch && matchesGenre;
   });
 
@@ -76,40 +90,52 @@ const BookShowcase = () => {
   const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
 
   return (
-    <div className="p-6 bg-[#FBEFEA] min-h-screen font-sans text-gray-800">
-      {/* Page Title */}
-      <h1 className="text-4xl font-extrabold mb-8 text-center" style={{ color: "#0F6317" }}>
-        Bookstore
-      </h1>
+    <div className="p-4 bg-[#FBEFEA] min-h-screen font-sans text-gray-800">
+      {/* Page Title with logo */}
+      <div className="flex justify-center mb-6">
+        <img
+          src={logo}
+          alt="AATI Logo"
+          className="h-14 w-14 rounded-full object-cover shadow-sm"
+        />
+      </div>
 
       {/* Popular Books Section */}
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: "#F18233" }}>
+        <h2
+          className="text-2xl font-bold mb-4 text-center"
+          style={{ color: "#F18233" }}
+        >
           Popular Books
         </h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 mb-10">
           {popularBooks.map((book, index) => (
             <div
               key={index}
-              className="rounded-lg overflow-hidden shadow-md transition-shadow duration-300"
+              className="rounded-md overflow-hidden shadow-sm transition-shadow duration-300"
               style={{
-                border: "2px solid #428338",
+                border: "1.5px solid #428338",
                 backgroundColor: "#ffffff",
               }}
             >
               <img
                 src={book.image}
                 alt={book.title}
-                className="w-full h-64 object-cover"
+                className="w-full h-40 object-contain bg-white"
               />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold mb-1" style={{ color: "#0F6317" }}>
+              <div className="p-3">
+                <h3
+                  className="text-base font-semibold mb-1"
+                  style={{ color: "#0F6317" }}
+                >
                   {book.title}
                 </h3>
-                <p className="text-sm text-[#5EB74B] mb-1 italic">{book.author}</p>
-                <p className="text-sm text-[#F18233] italic">{book.genre}</p>
+                <p className="text-xs text-[#5EB74B] mb-1 italic">
+                  {book.author}
+                </p>
+                <p className="text-xs text-[#F18233] italic">{book.genre}</p>
                 <button
-                  className="mt-4 px-4 py-2 rounded text-white font-semibold"
+                  className="mt-3 px-3 py-1 rounded text-white font-semibold text-sm"
                   style={{ backgroundColor: "#58B440" }}
                 >
                   Add to Cart
@@ -122,31 +148,34 @@ const BookShowcase = () => {
 
       {/* Other Books Section */}
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: "#F18233" }}>
+        <h2
+          className="text-2xl font-bold mb-4 text-center"
+          style={{ color: "#F18233" }}
+        >
           Other Books
         </h2>
 
         {/* Search */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-4">
           <input
             type="text"
             placeholder="Search books or authors..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="p-2 border border-[#428338] rounded shadow-inner w-1/2"
+            className="p-1.5 border border-[#428338] rounded shadow-inner w-1/2 text-sm"
             style={{ backgroundColor: "#FBEFEA", color: "#0F6317" }}
           />
         </div>
 
         {/* Genre Filter */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-6">
           <select
             value={selectedGenre}
             onChange={(e) => {
               setSelectedGenre(e.target.value);
               setCurrentPage(1);
             }}
-            className="p-2 border border-[#428338] rounded shadow-inner"
+            className="p-1.5 border border-[#428338] rounded shadow-inner text-sm"
             style={{ backgroundColor: "#FBEFEA", color: "#0F6317" }}
           >
             {genres.map((genre) => (
@@ -158,29 +187,34 @@ const BookShowcase = () => {
         </div>
 
         {/* Book Grid */}
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
           {currentBooks.map((book, index) => (
             <div
               key={index}
-              className="rounded-lg overflow-hidden shadow-md transition-shadow duration-300"
+              className="rounded-md overflow-hidden shadow-sm transition-shadow duration-300"
               style={{
-                border: "2px solid #0F6317",
+                border: "1.5px solid #0F6317",
                 backgroundColor: "#ffffff",
               }}
             >
               <img
                 src={book.image}
                 alt={book.title}
-                className="w-full h-64 object-cover"
+                className="w-full h-40 object-cover"
               />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold mb-1" style={{ color: "#0F6317" }}>
+              <div className="p-3">
+                <h3
+                  className="text-base font-semibold mb-1"
+                  style={{ color: "#0F6317" }}
+                >
                   {book.title}
                 </h3>
-                <p className="text-sm text-[#5EB74B] mb-1 italic">{book.author}</p>
-                <p className="text-sm text-[#F18233] italic">{book.genre}</p>
+                <p className="text-xs text-[#5EB74B] mb-1 italic">
+                  {book.author}
+                </p>
+                <p className="text-xs text-[#F18233] italic">{book.genre}</p>
                 <button
-                  className="mt-4 px-4 py-2 rounded text-white font-semibold"
+                  className="mt-3 px-3 py-1 rounded text-white font-semibold text-sm"
                   style={{ backgroundColor: "#58B440" }}
                 >
                   Add to Cart
@@ -192,25 +226,27 @@ const BookShowcase = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center mt-8 space-x-4">
+          <div className="flex justify-center mt-6 space-x-3">
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-5 py-2 rounded font-semibold text-white disabled:opacity-50"
+              className="px-3 py-1.5 rounded font-semibold text-white disabled:opacity-50 text-sm"
               style={{ backgroundColor: "#58B440" }}
             >
               Previous
             </button>
             <span
-              className="px-5 py-2 rounded font-semibold"
+              className="px-3 py-1.5 rounded font-semibold text-sm"
               style={{ backgroundColor: "#58B440", color: "#FBEFEA" }}
             >
               Page {currentPage} of {totalPages}
             </span>
             <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
               disabled={currentPage === totalPages}
-              className="px-5 py-2 rounded font-semibold text-white disabled:opacity-50"
+              className="px-3 py-1.5 rounded font-semibold text-white disabled:opacity-50 text-sm"
               style={{ backgroundColor: "#58B440" }}
             >
               Next
