@@ -1,5 +1,9 @@
+from uuid import UUID
 from rest_framework import viewsets, permissions
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from django.http import Http404
+
+from django.shortcuts import get_object_or_404
 
 from .models import Book, Review
 from .serializers import ReviewSerializer, BookSerializer
@@ -23,8 +27,15 @@ class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def perform_create(self, serializer):
-        book = Book.objects.get(book_id = self.kwargs['book_pk'])
-        # prevent reviewing own book.
+
+        # ensure the key provided is in UUID form, not any other form.
+        try:
+            UUID(self.kwargs.get('book_pk'))  # will raise ValueError if invalid
+        except (ValueError, TypeError):
+            raise Http404("Invalid book ID format")
+        book = get_object_or_404(Book, book_id = self.kwargs.get('book_pk'))
+
+        # prevent reviewing own book
         if book.added_by == self.request.user:
             raise PermissionDenied("You cannot review your own book.")
         

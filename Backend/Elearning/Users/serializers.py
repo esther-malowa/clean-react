@@ -132,9 +132,7 @@ def send_activation_email(request, user, email):
         email_subject = 'Activate your account.'
         email_body = f"Hello {user.first_name + " " + user.last_name}\n\n\n Please activate your account using the link below\n\n{activate_url}"
         email_message = EmailMessage(email_subject, email_body, settings.DEFAULT_FROM_EMAIL, [email])
-        print(email_message)
         EmailThread(email_message).start()
     except Exception as e:
-        print(f"Email error: ", e)
         raise serializers.ValidationError('Email sending failed. Please try again or contact us if the problem persists.')
 

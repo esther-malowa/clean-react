@@ -167,7 +167,6 @@ class ResendEmailView(APIView):
             return Response({"email_error":"Email Field cannot be empty."}, status=status.HTTP_400_BAD_REQUEST)
         
         user = User.objects.filter(email=email).first()
-        print("user =>", user)
         if not user:
             return Response({"error": "could not find user."}, status=status.HTTP_200_OK)
 
