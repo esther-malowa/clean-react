@@ -67,4 +67,5 @@ const BookDetailsPage = () => {
     </Layout>
   );
 };
+export default BookDetailsPage;
 
