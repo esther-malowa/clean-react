@@ -26,6 +26,7 @@ const [menuOpen, setMenuOpen] = useState(false)
                   <Link to="/courses" className="hover:text-blue-600">Courses</Link>
                   <Link to="/books" className="hover:text-blue-600">Books</Link>
                   <Link to="/contact" className="hover:text-blue-600">Contact</Link>
+                  <Link to="/checkout" className="hover:text-blue-600">Checkout</Link>
                 </nav>
                 <button className="md:hidden text-gray-800" onClick={() => setMenuOpen(!menuOpen)}>
                   <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} size="lg" />
@@ -37,6 +38,7 @@ const [menuOpen, setMenuOpen] = useState(false)
                   <Link to="/courses" className="block hover:text-blue-600" onClick={() => setMenuOpen(false)}>Courses</Link>
                   <Link to="/books" className="block hover:text-blue-600" onClick={() => setMenuOpen(false)}>Books</Link>
                   <Link to="/contact" className="block hover:text-blue-600" onClick={() => setMenuOpen(false)}>Contact</Link>
+                  <Link to="/checkout" className="block hover:text-blue-600" onClick={() => setMenuOpen(false)}>Checkout</Link>
                 </div>
               )}
             </header>

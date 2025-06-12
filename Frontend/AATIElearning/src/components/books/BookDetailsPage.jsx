@@ -1,9 +1,9 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Layout from "./Layout";
+import Layout from "../header_footer/Header";
 import books from "./BookData"; 
 import StarRating from "./StarRating";
-import { useCart } from "./CartContext";
+import { useCart } from "../cart/CartContext";
 
 const BookDetailsPage = () => {
   
@@ -68,4 +68,3 @@ const BookDetailsPage = () => {
   );
 };
 export default BookDetailsPage;
-
