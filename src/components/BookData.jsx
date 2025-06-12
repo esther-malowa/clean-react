@@ -6,7 +6,11 @@ const books = [
     description: 'A novel set in the Roaring Twenties...',
     price: 'KSh 1,200',
     image: '/images/book4.jpg',
+
     rating: 4.5,
+
+    rating: 3,
+
     reviews: [
       { id: 1, rating: 5, text: 'Absolutely loved this book!' },
       { id: 2, rating: 4, text: 'Great read, well written.' },

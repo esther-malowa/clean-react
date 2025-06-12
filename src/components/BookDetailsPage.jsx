@@ -6,11 +6,13 @@ import StarRating from "./StarRating";
 import { useCart } from "./CartContext";
 
 const BookDetailsPage = () => {
-  const { id } = useParams();
+  
+  const { book_id } = useParams();
   const { addToCart } = useCart();
 
   const navigate = useNavigate();
-  const book = books.find((b) => b.book_id === id);
+  const book = books.find((b) => b.book_id === book_id);
+
   if (!book) {
     return (
       <Layout>
@@ -43,12 +45,10 @@ const BookDetailsPage = () => {
         <p className="mt-4 text-xl font-semibold text-blue-800">{book.price}</p>
         <button
   onClick={() => addToCart(book)}
- 
   className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
 >
   Add to Cart
 </button>
-        
 
         <div className="mt-6">
           <h2 className="text-2xl font-semibold mb-2">Reviews:</h2>
@@ -68,4 +68,3 @@ const BookDetailsPage = () => {
   );
 };
 
-export default BookDetailsPage;

@@ -7,7 +7,11 @@ export default {
   theme: {
     extend: {
       colors: {
+<<<<<<< HEAD
         primaryGreen: '#58B440', // Your custom green
+=======
+        primaryGreen: '#58B440',
+>>>>>>> 0bac392 (commit)
       },
     },
   },

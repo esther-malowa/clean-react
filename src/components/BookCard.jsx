@@ -25,4 +25,6 @@ const BookCard = ({ book }) => (
   </Link>
 );
 
+
 export default BookCard;
+

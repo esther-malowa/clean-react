@@ -1,5 +1,6 @@
 """User related serializers."""
 import re
+<<<<<<< HEAD
 import threading
 
 from rest_framework import serializers
@@ -12,6 +13,11 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from .utils import token_generator
 
+=======
+
+from rest_framework import serializers
+
+>>>>>>> 0bac392 (commit)
 
 from .models import UserProfile, User
 
@@ -33,7 +39,11 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     def validate_email(self, value):
         """Check if email already registered."""
         if User.objects.filter(email=value).exists():
+<<<<<<< HEAD
             raise serializers.ValidationError("User with that email already exists. Use another email or login")
+=======
+            raise serializers.ValidationError("User with that email already exists. User another email or login")
+>>>>>>> 0bac392 (commit)
         return value
     
     def validate_username(self, value):
@@ -73,6 +83,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         validated_data.pop('confirm_password', None)
 
         password = validated_data.pop('password')
+<<<<<<< HEAD
         user = User.objects.create_user(is_active=False ,password=password, **validated_data)
 
         UserProfile.objects.create(user = user)
@@ -80,6 +91,11 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         # send verification email
         send_activation_email(self.context.get('request'), user, user.email)
 
+=======
+        user = User.objects.create_user(password=password, **validated_data)
+
+        UserProfile.objects.create(user = user)
+>>>>>>> 0bac392 (commit)
         return user
 
 
@@ -96,6 +112,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ['username', 'email', 'first_name', 'last_name', 'bio', 'profile_picture']
 
+<<<<<<< HEAD
 
 class EmailThread(threading.Thread):
     """Speed up the sending of an email"""
@@ -134,3 +151,5 @@ def send_activation_email(request, user, email):
         print(f"Email error: ", e)
         raise serializers.ValidationError('Email sending failed. Please try again or contact us if the problem persists.')
 
+=======
+>>>>>>> 0bac392 (commit)

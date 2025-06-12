@@ -39,5 +39,4 @@ const BookListing = () => {
     </Layout>
   );
 };
-
 export default BookListing;
