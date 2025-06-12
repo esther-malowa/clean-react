@@ -9,7 +9,7 @@ const heroImages = [
   '/images/hero3.jpg',
 ]; 
 
-const LandingPage: React.FC = () => {
+const LandingPage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false); // Mobile menu state
 

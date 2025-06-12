@@ -1,9 +1,9 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Layout from "./Layout";
+import Layout from "../Layout";
 import books from "./BookData"; 
-import StarRating from "./StarRating";
-import { useCart } from "./CartContext";
+import StarRating from "../StarRating";
+import { useCart } from "../CartContext";
 
 const BookDetailsPage = () => {
   
