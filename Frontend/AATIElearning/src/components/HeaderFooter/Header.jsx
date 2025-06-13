@@ -5,16 +5,43 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import useProtectPage from "../utils/ProtectPage";
+import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie'
+import Backendconnection from '../services/services'
+import StatusMessage from '../Messages/StatusMessage'
 
 const Layout = ({ children }) => {
+  const navigate = useNavigate()  
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false);
-  const { isAuthenticated } = useProtectPage({ validateToken: true, enableLoading: false , redirectPath: null})
+  const [loggedOut, setLoggedOut] = useState()
+  const { isAuthenticated} = useProtectPage({ validateToken: true, enableLoading: false, redirectPath: null })
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    Backendconnection.setHeaders(Cookies.get("access_token"))
+    const token = Cookies.get("refresh_token")
+
+    try {
+      const response = await Backendconnection.logout(token)
+      setLoggedOut(response.success)
+      Cookies.remove("refresh_token")
+      Cookies.remove("access_token")
+      
+      setTimeout(() => {
+        navigate('/login')
+      }, 3000);
+
+    } catch (error) {
+      console.log(error)
+      setLoggedOut(error.message || 'An error has occured.')
+    } finally {
+      setTimeout(() => {
+        setLoggedOut('')
+      }, 5000);
+    }
     Cookies.remove("access_token")
   }
+  
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -23,7 +50,6 @@ const Layout = ({ children }) => {
         setScrolled(false)
       }
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
@@ -38,8 +64,7 @@ const Layout = ({ children }) => {
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between transition-all duration-300">
           {/* Logo */}
           <div
-            className={`items-center space-x-2 transition-opacity duration-300 ${scrolled ? "opacity-0 hidden md:flex" : "opacity-100 flex"
-              }`}
+            className={`items-center space-x-2 transition-opacity duration-300`}
           >
             <img
               src="/images/Logo.png"
@@ -80,13 +105,13 @@ const Layout = ({ children }) => {
         {menuOpen && (
           <div className="md:hidden bg-white border-t text-center py-4 space-y-3">
             <Link to="/" className="block hover:text-blue-600" onClick={() => setMenuOpen(false)}>Home</Link>
-            <Link to="/courses" className="block hover:text-blue-600" onClick={() => setMenuOpen(false)}>Courses</Link>
+            {/* <Link to="/courses" className="block hover:text-blue-600" onClick={() => setMenuOpen(false)}>Courses</Link> */}
             <Link to="/books" className="block hover:text-blue-600" onClick={() => setMenuOpen(false)}>Books</Link>
-            <Link to="/contact" className="block hover:text-blue-600" onClick={() => setMenuOpen(false)}>Contact</Link>
+            {/* <Link to="/contact" className="block hover:text-blue-600" onClick={() => setMenuOpen(false)}>Contact</Link> */}
             <Link to="/checkout" className="block hover:text-blue-600" onClick={() => setMenuOpen(false)}>Checkout</Link>
 
             {isAuthenticated ? (
-              <Link to="" className="block text-orange-600 hover:text-orange-800" onClick={() => { setMenuOpen(false); handleLogout }}>
+              <Link to="" className="block text-orange-600 hover:text-orange-800" onClick={() => { setMenuOpen(false); handleLogout(); }}>
                 Logout
               </Link>
             ) : (
@@ -97,9 +122,8 @@ const Layout = ({ children }) => {
             )}
           </div>
         )}
-
       </header>
-
+      <StatusMessage message={loggedOut} />
       <main className="flex-1">{children}</main>
       <Footer />
     </div>

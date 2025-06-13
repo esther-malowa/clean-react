@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 // Get a specific cookie
 const getCookie = (name) => {
   if (typeof document === 'undefined') return null;
-
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) {
@@ -32,16 +31,13 @@ const useProtectPage = ({
   const checkAuthentication = useCallback(() => {
     try {
       const token = getCookie(cookieName);
-
       if (!token || (validateToken && !isValidToken(token))) {
         if (token) {
-          // Clear invalid token
           document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
         }
         setIsAuthenticated(false);
         return false;
       }
-
       setIsAuthenticated(true);
       return true;
     } catch (err) {
@@ -53,30 +49,34 @@ const useProtectPage = ({
 
   const handleUnauthorized = useCallback(() => {
     if (typeof onUnauthorized === "function") onUnauthorized();
-    setTimeout(() => navigate(redirectPath, { replace: true }), 100);
+    if (redirectPath) {
+      setTimeout(() => navigate(redirectPath, { replace: true }), 100);
+    }
   }, [navigate, redirectPath, onUnauthorized]);
 
   useEffect(() => {
     const isAuth = checkAuthentication();
-    if (!isAuth) handleUnauthorized();
+    if (!isAuth && redirectPath) handleUnauthorized();
     setIsLoading(false);
-  }, [checkAuthentication, handleUnauthorized]);
+  }, [checkAuthentication, handleUnauthorized, redirectPath]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       const token = getCookie(cookieName);
       const valid = token && (!validateToken || isValidToken(token));
       if (isAuthenticated && !valid) {
-        handleUnauthorized();
+        if(redirectPath){
+          handleUnauthorized();
+        }
       }
     }, 5000); // every 5 sec
-
     return () => clearInterval(interval);
   }, [cookieName, isAuthenticated, validateToken, handleUnauthorized]);
 
   return {
     isLoading,
     isAuthenticated,
+    setIsAuthenticated, // ✅ Added this line - this was missing!
     checkAuthentication,
     getCookie: (name) => getCookie(name)
   };

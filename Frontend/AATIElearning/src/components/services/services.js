@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Cookies from 'js-cookie'
 
 const apiClient = axios.create({
     baseURL: 'http://localhost:8000/api',
@@ -7,8 +8,10 @@ const apiClient = axios.create({
 
 const handleError = (error) => {
     if (error.response && error.response.status === 401) {
-        localStorage.clear()
-        throw new Error('‼️‼️ Oops !Session expired. Please log in again.');
+        // throw new Error('‼️‼️ Oops !Session expired. Please log in again.');
+        console.log(error)
+        const messages = Object.values(error.response.data).flat().join(' ');
+        throw new Error(messages);
     } else if (error.response && error.response.status === 500) {
         throw new Error('‼️‼️ Oops! Server Error. Please try again later.');
     } else if (error.response && error.response.data) {
@@ -74,6 +77,17 @@ class BackendConnection {
             handleError(error)
         }
     }
+
+    async logout (token) {
+        try {
+            this.setHeaders(Cookies.get("access_token"))
+            const response = await apiClient.post('/users/logout/', {"refresh_token": token})
+            return response.data
+        } catch (error)
+        {
+            handleError(error)
+        }
+    } 
 
     //Books methods.
     async getBooks() {
