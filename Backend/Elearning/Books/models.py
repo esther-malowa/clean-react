@@ -21,8 +21,11 @@ class Book(models.Model):
     author = models.CharField(max_length=100)
     description = models.TextField()
     genre = models.CharField(max_length=100, choices=GENRE, default='AGR')
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     date_of_publication = models.DateField()
+    image = models.ImageField(upload_to='books', default='books/default.jpg')
     date_added = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
     added_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name='books')
 
     class Meta:

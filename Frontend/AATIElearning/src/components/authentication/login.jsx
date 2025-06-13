@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
 import logo from '../../assets/logo.jpg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../form/Button';
 import Backendconnection from '../services/services'
 import StatusMessage from '../Messages/StatusMessage';
+import Cookies from'js-cookie';
+
 
 export default function Login() {
   const [formData, setFormData] = useState({
     username_or_email: '',
     password: ''
   });
-
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -47,6 +49,25 @@ export default function Login() {
       const response = await Backendconnection.login(formData)
       setSuccess(response.success)
 
+      // set the tokens in cookies.
+      Cookies.set(
+        "access_token", response.tokens.access, {
+          secure: false,
+          sameSite: "strict"
+        }
+      )
+
+      Cookies.set(
+        "refresh_token", response.tokens.refresh,{
+          secure: false,
+          sameSite: "strict"
+        }
+      )
+
+      setTimeout(() => {
+        navigate('/books')
+      }, 1500)      
+      
     } catch (err) {
       setError(err.message);
     }finally {

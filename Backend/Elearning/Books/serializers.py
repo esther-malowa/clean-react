@@ -3,11 +3,13 @@ from .models import Book, Review
 
 class BookSerializer(serializers.ModelSerializer):
     added_by = serializers.CharField(source='added_by.username', read_only=True)
+    price = serializers.DecimalField(max_digits = 10, decimal_places=2, required = False)
+    image = serializers.ImageField(required=False)
     
     class Meta:
         model = Book
-        fields = ['book_id', 'added_by', 'genre', 'title', 'author', 'description', 'date_of_publication', 'date_added']
-        read_only_fields = ['book_id', 'added_by', 'date_added']
+        fields = ['book_id', 'added_by', 'genre', 'title', 'image', 'author', 'description', 'price', 'date_of_publication', 'date_added', 'updated_at']
+        read_only_fields = ['book_id', 'added_by', 'date_added', 'updated_at']
     
     def validate(self, data):
         """Ensure the user does not register a book of the same title and author at the same time."""

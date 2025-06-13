@@ -74,6 +74,25 @@ class BackendConnection {
             handleError(error)
         }
     }
+
+    //Books methods.
+    async getBooks() {
+        try{
+            const response = await apiClient.get('/books/')
+            return response.data
+        } catch (error) {
+            handleError(error)
+        }
+    }
+
+    async getPopularBooks () {
+        try{
+            const response = await apiClient.get('/books?popular')
+            return response.data
+        } catch (error){
+            handleError(error)
+        }
+    }
 }
 
 

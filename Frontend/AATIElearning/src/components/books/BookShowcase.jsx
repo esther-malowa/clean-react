@@ -1,28 +1,8 @@
-import React, { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import logo from "../../assets/logo.jpg";
-
-const popularBooks = [
-  {
-    title: "Atomic Habits",
-    author: "James Clear",
-    genre: "Self-help",
-    image:
-      "https://m.media-amazon.com/images/I/91bYsX41DVL._AC_UF1000,1000_QL80_.jpg",
-  },
-  {
-    title: "Rich Dad Poor Dad",
-    author: "Robert Kiyosaki",
-    genre: "Finance",
-    image: "https://m.media-amazon.com/images/I/81bsw6fnUiL.jpg",
-  },
-  {
-    title: "The Power of Habit",
-    author: "Charles Duhigg",
-    genre: "Self-help",
-    image:
-      "https://images-na.ssl-images-amazon.com/images/I/51ejXdSceNL._SX329_BO1,204,203,200_.jpg",
-  },
-];
+import BookCard from "./BookCard";
+import useProtectPage from "../utils/ProtectPage";
+import Backendconnection from "../services/services";
 
 const otherBooks = [
   {
@@ -47,15 +27,13 @@ const otherBooks = [
     title: "Thinking, Fast and Slow",
     author: "Daniel Kahneman",
     genre: "Psychology",
-    image:
-      "https://m.media-amazon.com/images/I/41J87aD8FJL._SX331_BO1,204,203,200_.jpg",
+    image: "https://m.media-amazon.com/images/I/41J87aD8FJL._SX331_BO1,204,203,200_.jpg",
   },
   {
     title: "Influence",
     author: "Robert Cialdini",
     genre: "Psychology",
-    image:
-      "https://m.media-amazon.com/images/I/51B6Y0JYPKL._SX331_BO1,204,203,200_.jpg",
+    image: "https://m.media-amazon.com/images/I/51B6Y0JYPKL._SX331_BO1,204,203,200_.jpg",
   },
 ];
 
@@ -70,10 +48,16 @@ const genres = [
 ];
 
 const BookShowcase = () => {
+  useProtectPage();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const booksPerPage = 3;
+
+  const [popularBooks, setPopularBooks] = useState([]);
+  const [popularBooksLoader, setPopularBooksLoader] = useState(false);
+  const [popularError, setPopularError] = useState("");
 
   const filteredBooks = otherBooks.filter((book) => {
     const matchesSearch =
@@ -89,9 +73,34 @@ const BookShowcase = () => {
   const currentBooks = filteredBooks.slice(indexOfFirstBook, indexOfLastBook);
   const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
 
+  const getPopularBooks = useCallback(async () => {
+    try {
+      setPopularError('')
+      setPopularBooks([]);
+      setPopularBooksLoader(true);
+      const books = await Backendconnection.getPopularBooks();
+      console.log(books);
+      if (Array.isArray(books)) {
+        setPopularBooks(books);
+      } else if (Array.isArray(books.books)) {
+        setPopularBooks(books.books);
+      } else {
+        throw new Error("Unexpected response format");
+      }
+    } catch (error) {
+      setPopularError(error.message || "Something went wrong getting popular books.");
+    } finally {
+      setPopularBooksLoader(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    getPopularBooks();
+  }, [getPopularBooks]);
+
   return (
     <div className="p-4 bg-[#FBEFEA] min-h-screen font-sans text-gray-800">
-      {/* Page Title with logo */}
+      {/* Logo */}
       <div className="flex justify-center mb-6">
         <img
           src={logo}
@@ -100,58 +109,30 @@ const BookShowcase = () => {
         />
       </div>
 
-      {/* Popular Books Section */}
+      {/* Popular Books */}
       <div className="max-w-7xl mx-auto">
-        <h2
-          className="text-2xl font-bold mb-4 text-center"
-          style={{ color: "#F18233" }}
-        >
+        <h2 className="text-2xl font-bold mb-4 text-center" style={{ color: "#F18233" }}>
           Popular Books
         </h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 mb-10">
-          {popularBooks.map((book, index) => (
-            <div
-              key={index}
-              className="rounded-md overflow-hidden shadow-sm transition-shadow duration-300"
-              style={{
-                border: "1.5px solid #428338",
-                backgroundColor: "#ffffff",
-              }}
-            >
-              <img
-                src={book.image}
-                alt={book.title}
-                className="w-full h-40 object-contain bg-white"
-              />
-              <div className="p-3">
-                <h3
-                  className="text-base font-semibold mb-1"
-                  style={{ color: "#0F6317" }}
-                >
-                  {book.title}
-                </h3>
-                <p className="text-xs text-[#5EB74B] mb-1 italic">
-                  {book.author}
-                </p>
-                <p className="text-xs text-[#F18233] italic">{book.genre}</p>
-                <button
-                  className="mt-3 px-3 py-1 rounded text-white font-semibold text-sm"
-                  style={{ backgroundColor: "#58B440" }}
-                >
-                  Add to Cart
-                </button>
-              </div>
+        <div className="flex flex-wrap justify-center gap-4 mb-4">
+          {popularBooksLoader && (
+            <div className="flex justify-center items-center w-full">
+              <div className="h-10 w-10 border-4 border-t-transparent border-green-600 rounded-full animate-spin"></div>
             </div>
+          )}
+          {popularError && <p className="text-red-600">{popularError}</p>}
+          {!popularBooksLoader && !popularError && popularBooks.length === 0 && (
+            <p className="text-red-600">There are no popular books at the moment.</p>
+          )}
+          {Array.isArray(popularBooks) && popularBooks.map((book) => (
+            <BookCard key={book.book_id} book={book} />
           ))}
         </div>
       </div>
 
-      {/* Other Books Section */}
+      {/* Other Books */}
       <div className="max-w-7xl mx-auto">
-        <h2
-          className="text-2xl font-bold mb-4 text-center"
-          style={{ color: "#F18233" }}
-        >
+        <h2 className="text-2xl font-bold mb-4 text-center" style={{ color: "#F18233" }}>
           Other Books
         </h2>
 
@@ -192,10 +173,7 @@ const BookShowcase = () => {
             <div
               key={index}
               className="rounded-md overflow-hidden shadow-sm transition-shadow duration-300"
-              style={{
-                border: "1.5px solid #0F6317",
-                backgroundColor: "#ffffff",
-              }}
+              style={{ border: "1.5px solid #0F6317", backgroundColor: "#ffffff" }}
             >
               <img
                 src={book.image}
@@ -203,15 +181,10 @@ const BookShowcase = () => {
                 className="w-full h-40 object-cover"
               />
               <div className="p-3">
-                <h3
-                  className="text-base font-semibold mb-1"
-                  style={{ color: "#0F6317" }}
-                >
+                <h3 className="text-base font-semibold mb-1" style={{ color: "#0F6317" }}>
                   {book.title}
                 </h3>
-                <p className="text-xs text-[#5EB74B] mb-1 italic">
-                  {book.author}
-                </p>
+                <p className="text-xs text-[#5EB74B] mb-1 italic">{book.author}</p>
                 <p className="text-xs text-[#F18233] italic">{book.genre}</p>
                 <button
                   className="mt-3 px-3 py-1 rounded text-white font-semibold text-sm"
@@ -242,9 +215,7 @@ const BookShowcase = () => {
               Page {currentPage} of {totalPages}
             </span>
             <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
               className="px-3 py-1.5 rounded font-semibold text-white disabled:opacity-50 text-sm"
               style={{ backgroundColor: "#58B440" }}

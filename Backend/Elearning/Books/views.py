@@ -1,8 +1,9 @@
 from uuid import UUID
 from rest_framework import viewsets, permissions
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from django.http import Http404
 
+from django.http import Http404
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 
 from .models import Book, Review
@@ -18,7 +19,15 @@ class BookViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         serializer.save(added_by = self.request.user)
+    
+    def get_queryset(self):
+        """Handle 'popular' books to"""
+        queryset = Book.objects.all()
 
+        if self.request.query_params.get('popular') is not None:
+            return queryset.annotate(num_reviews = Count('reviews')).order_by('-num_reviews')[:5]
+        return queryset
+    
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """Create, update, retrieve, and delete books"""

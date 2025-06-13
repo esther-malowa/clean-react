@@ -9,7 +9,6 @@ import BookShowcase from "./components/books/BookShowcase";
 import ActivateAccount from "./components/authentication/activateAccount";
 import AccountActivated from "./components/authentication/accountActivated";
 import Cart from "./components/books/Cart";
-
 function App() {
   const [cartItems, setCartItems] = useState([]);
 
