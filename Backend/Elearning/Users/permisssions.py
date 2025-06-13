@@ -12,7 +12,16 @@ class IsOwnerorReadoOnly(BasePermission):
         """Read Permissions for authenticated users only
         Write permissions only for the owner of the profile.
         """
+<<<<<<< HEAD
         if request.method in SAFE_METHODS:
             return True
+=======
+        if not request.user or request.user.is_anonymous:
+            return False
+        
+        if request.method in SAFE_METHODS:
+            return True
+        
+>>>>>>> 0bac392 (commit)
         return obj.user == request.user
     

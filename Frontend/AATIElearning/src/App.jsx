@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import { useState } from "react";
 import Register from "./components/authentication/Register";
 import Login from "./components/authentication/login";
@@ -9,6 +9,13 @@ import BookShowcase from "./components/books/BookShowcase";
 import ActivateAccount from "./components/authentication/activateAccount";
 import AccountActivated from "./components/authentication/accountActivated";
 import Cart from "./components/books/Cart";
+import HomePage from './components/homepage/HomePage';
+import CheckoutPage from './components/cart/CheckoutPage';
+import BookDetailsPage from './components/books/BookDetailsPage';
+import BookListing from './components/books/BookListing';
+
+
+
 function App() {
   const [cartItems, setCartItems] = useState([]);
 
@@ -24,20 +31,6 @@ function App() {
 
   return (
     <Router>
-      <nav className="bg-white shadow p-4 flex justify-between items-center">
-        <Link to="/" className="text-[#F18233] font-bold text-xl">
-          BookStore
-        </Link>
-        <div className="space-x-4">
-          <Link to="/books" className="text-[#58B440] hover:underline">
-            Books
-          </Link>
-          <Link to="/cart" className="text-[#58B440] hover:underline">
-            Cart ({cartItems.length})
-          </Link>
-        </div>
-      </nav>
-
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/register" element={<Register />} />
@@ -56,6 +49,14 @@ function App() {
             <Cart cartItems={cartItems} onRemove={handleRemoveFromCart} />
           }
         />
+        <Route path="/" element={<Landpage />} />
+        <Route path="/home-page" element={<HomePage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/books/:book_id" element={<BookDetailsPage />} />
+        <Route path="/books" element={<BookListing />} />
+        
+        
+    
       </Routes>
     </Router>
   );

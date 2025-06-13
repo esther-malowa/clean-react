@@ -1,31 +1,30 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import StarRating from "./StarRating"; 
 
-const BookCard = ({ book }) => {
-  return (
-    <div
-      className="w-[150px] sm:w-[160px] md:w-[180px] rounded-lg shadow-sm border"
-      style={{ borderColor: "#0F6317", backgroundColor: "#ffffff" }}
-    >
-      <img
-        src={book.image}
-        alt={book.title}
-        className="w-full h-36 object-contain p-2 bg-white"
-      />
-      <div className="p-2 text-center">
-        <h3 className="text-sm font-semibold" style={{ color: "#0F6317" }}>
-          {book.title}
-        </h3>
-        <p className="text-xs text-[#5EB74B] italic">{book.author}</p>
-        <p className="text-xs text-[#F18233] italic">{book.genre}</p>
-        <button
-          className="mt-2 w-full py-1 rounded text-white text-xs font-medium"
-          style={{ backgroundColor: "#58B440" }}
-        >
-          Add to Cart
-        </button>
-      </div>
+const BookCard = ({ book }) => (
+  <Link
+    to={`/books/${book.book_id}`}
+    className="bg-white rounded-xl shadow-md hover:shadow-lg overflow-hidden transition block"
+  >
+    <img
+      src={book.image || book.cover}
+      alt={book.title}
+       className="h-64 w-full object-contain rounded-t-xl bg-white"
+    />
+
+    <div className="p-4">
+      <h3 className="text-lg font-bold">{book.title}</h3>
+      <p className="text-gray-500">by {book.author}</p>
+      {book.rating && (
+        <div className="mt-2">
+          <StarRating rating={book.rating} />
+        </div>
+      )}
     </div>
-  );
-};
+  </Link>
+);
+
 
 export default BookCard;
+
