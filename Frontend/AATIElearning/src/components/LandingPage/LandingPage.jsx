@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGraduationCap, faClock, faCertificate } from '@fortawesome/free-solid-svg-icons';
+import Layout from '../HeaderFooter/Header';
 
 const heroImages = [
   '/images/hero1.jpg',
@@ -11,7 +12,6 @@ const heroImages = [
 
 const LandingPage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false); // Mobile menu state
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -21,9 +21,9 @@ const LandingPage = () => {
   }, []);
 
   return (
+    <Layout >
     <div className="bg-white text-gray-800 font-sans">
-      {/* Hero Section */}
-      <section className="relative h-screen w-full overflow-hidden">
+        <section className="relative h-screen w-full overflow-hidden">
         {heroImages.map((src, index) => (
           <img
             key={index}
@@ -35,58 +35,8 @@ const LandingPage = () => {
           />
         ))}
 
-        {/* Header */}
-        <header className="relative z-20 flex items-center justify-between px-6 py-4 bg-transparent">
-          {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <img src="/images/Logo.png" alt="Logo" className="w-20 h-20 bg-transparent" />
-          </div>
-
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex space-x-6">
-            <a href="#home" className="text-white hover:text-blue-200">Home</a>
-            <a href="#pages" className="text-white hover:text-blue-200">Pages</a>
-            <a href="#our-courses" className="text-white hover:text-blue-200">Our Courses</a>
-            <a href="#blog" className="text-white hover:text-blue-200">Blog</a>
-            <a href="#dashboard" className="text-white hover:text-blue-200">Dashboard</a>
-          </nav>
-
-          {/* CTA Button */}
-          <div className="hidden md:block">
-            <a href="#get-started" className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition">
-              Get Started
-            </a>
-          </div>
-
-          {/* Mobile Menu Icon */}
-          <div className="md:hidden">
-            <button
-              aria-label="Toggle menu"
-              onClick={() => setMenuOpen(!menuOpen)}
-            >
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </header>
-
-        {/* Mobile Nav Menu */}
-        {menuOpen && (
-          <nav className="md:hidden absolute top-20 left-0 right-0 bg-black bg-opacity-80 z-30 text-white flex flex-col space-y-4 px-6 py-4">
-            <a href="#home" className="hover:text-blue-300" onClick={() => setMenuOpen(false)}>Home</a>
-            <a href="#pages" className="hover:text-blue-300" onClick={() => setMenuOpen(false)}>Pages</a>
-            <a href="#our-courses" className="hover:text-blue-300" onClick={() => setMenuOpen(false)}>Our Courses</a>
-            <a href="#blog" className="hover:text-blue-300" onClick={() => setMenuOpen(false)}>Blog</a>
-            <a href="#dashboard" className="hover:text-blue-300" onClick={() => setMenuOpen(false)}>Dashboard</a>
-            <a href="#get-started" className="bg-blue-600 px-4 py-2 rounded-xl hover:bg-blue-700 text-center" onClick={() => setMenuOpen(false)}>
-              Get Started
-            </a>
-          </nav>
-        )}
-
         {/* Hero Overlay */}
-        <div className="relative z-10 flex flex-col items-center justify-center h-full bg- bg-opacity-50 text-white text-center px-6">
+        <div className="relative z-5 flex flex-col items-center justify-center h-full bg- bg-opacity-50 text-white text-center px-6">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Learn Anytime, Anywhere</h1>
           <p className="text-lg md:text-xl mb-6 max-w-xl">
             Online courses from top instructors — build skills, get certified, and advance your career.
@@ -159,6 +109,7 @@ const LandingPage = () => {
         © {new Date().getFullYear()} LearnOnline. All rights reserved.
       </footer>
     </div>
+  </Layout>
   );
 };
 

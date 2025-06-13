@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
 import logo from '../../assets/logo.jpg';
 import { Link, useNavigate } from 'react-router-dom';
@@ -74,6 +74,10 @@ export default function Login() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    document.title = "AATI | Login";
+  }, [])
 
   return (
     <div className="min-h-screen py-12 px-4" style={{ backgroundColor: '#F2FBF3' }}>

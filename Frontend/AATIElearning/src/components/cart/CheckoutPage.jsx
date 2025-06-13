@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useCart } from "./CartContext";
-import Layout from "../header_footer/Header";
+import Layout from "../HeaderFooter/Header";
 
 const CheckoutPage = () => {
   const { cartItems } = useCart();
