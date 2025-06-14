@@ -4,11 +4,14 @@ import Layout from "../header_footer/Header";
 import books from "./BookData"; 
 import StarRating from "./StarRating";
 import { useCart } from "../cart/CartContext";
+import { useWishlist } from "./WishlistContext";
 
 const BookDetailsPage = () => {
   
   const { book_id } = useParams();
   const { addToCart } = useCart();
+  const { addToWishlist } = useWishlist();
+
 
   const navigate = useNavigate();
   const book = books.find((b) => b.book_id === book_id);
@@ -49,7 +52,15 @@ const BookDetailsPage = () => {
 >
   Add to Cart
 </button>
-
+<button
+  onClick={() => {
+    addToWishlist(book);
+    console.log("✅ Added to wishlist:", book);
+  }}
+  className="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 transition"
+>
+  Add to Wishlist
+</button>
         <div className="mt-6">
           <h2 className="text-2xl font-semibold mb-2">Reviews:</h2>
           {book.reviews.length > 0 ? (
