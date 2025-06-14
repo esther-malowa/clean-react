@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Layout from "../header_footer/Header";
+import Layout from "../HeaderFooter/Header";
 import books from "./BookData"; 
 import StarRating from "./StarRating";
 import { useCart } from "../cart/CartContext";

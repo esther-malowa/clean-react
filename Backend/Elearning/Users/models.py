@@ -20,11 +20,7 @@ class User(AbstractUser):
 
 
     def __str__(self):
-<<<<<<< HEAD
         return self.username
-=======
-        return self.username + " -> " + self.email
->>>>>>> 0bac392 (commit)
 
 class UserProfile(models.Model):
     """UserProfile that extends the User model."""

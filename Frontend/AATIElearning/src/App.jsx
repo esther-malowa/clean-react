@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { WishlistProvider } from "./components/books/WishlistContext";
@@ -14,9 +12,8 @@ import WishlistPage from "./components/books/WishlistPage";
 
 function App() {
   return (
-    <Router>
-    
     <WishlistProvider>
+    <Router>
       <Routes>
         <Route path="/" element={<Landpage />} />
         <Route path="/home-page" element={<HomePage />} />
@@ -28,10 +25,9 @@ function App() {
         
     
       </Routes>
-    
-    </WishlistProvider>
     </Router>
+    </WishlistProvider>
   );
 }
 
-export default App;
+export default App; 
