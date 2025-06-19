@@ -8,6 +8,7 @@ import BookDetailsPage from './components/books/BookDetailsPage';
 import BookListing from './components/books/BookListing';
 import WishlistPage from "./components/books/WishlistPage";
 import UserProfile from './components/UserProfile';
+import AdminRoutes from "./components/Admin/AdminRoutes";
 
 
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="/books" element={<BookListing />} />
          <Route path="/wishlist" element={<WishlistPage />} />
          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/*" element={<AdminRoutes />} />
         
         
     
