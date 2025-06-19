@@ -2,7 +2,7 @@ const Topbar = () => {
   return (
     <header className="flex justify-between items-center p-4 bg-white shadow">
       <div>
-        <h1 className="text-xl font-bold">Hello, Malowa 👋</h1>
+        <h1 className="text-xl font-bold">Hello, Malowa                                                                                                                                                                                                                                                                                                                                     👋</h1>
         <p className="text-sm text-gray-500">Welcome to Dashboard!</p>
       </div>
       <div className="flex items-center gap-4">
@@ -12,7 +12,8 @@ const Topbar = () => {
 
       </div>
     </header>
-  );
+  );                                                                                                                                                                                                                                                                                                                                    
 };
 
 export default Topbar;
+                                                                                                                                          
